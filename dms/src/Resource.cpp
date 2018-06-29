@@ -1,4 +1,5 @@
 #include "include/Resource.hpp"
+#include "include/ts_utility.hpp"
 
 // Constructor
 // - initialize resource with configuration properties and file locations. There

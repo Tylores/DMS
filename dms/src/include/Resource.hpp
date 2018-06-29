@@ -24,7 +24,6 @@ Note: Please reference http://en.cppreference.com/w/cpp for additional help
 #ifndef RESOURCE_H_INCLUDED
 #define RESOURCE_H_INCLUDED
 #include <string>
-#include <vector>
 #include <map>
 
 #include "ts_utility.hpp"
@@ -34,8 +33,7 @@ class Resource {
 public :
     // member functions
     Resource (const tsu::config_map& init_map);
-    ~Resource ();
-    CTA2045 cta_module_;
+    virtual ~Resource ();
     void Control ();
     std::map<std::string, unsigned int> GetProperties ();
 
@@ -58,6 +56,10 @@ private :
     // - you must conform to the naming convention set for these properties and
     //   thier corresponding value types.
     std::map<std::string, unsigned int> properties_;
+
+private :
+    // class composition
+
 }; // end Resource
 
 #endif // RESOURCE_H_INCLUDED
