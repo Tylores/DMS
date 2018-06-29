@@ -28,12 +28,14 @@ Note: Please reference http://en.cppreference.com/w/cpp for additional help
 #include <map>
 
 #include "ts_utility.hpp"
+#include "CTA2045.hpp"
 
 class Resource {
 public :
     // member functions
     Resource (const tsu::config_map& init_map);
     ~Resource ();
+    CTA2045 cta_module_;
     void Control ();
     std::map<std::string, unsigned int> GetProperties ();
 
