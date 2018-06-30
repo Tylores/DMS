@@ -1,7 +1,8 @@
-#include "CTA2045.hpp"
+#include "include/CTA2045.hpp"
+#include "include/Serial.hpp"
 
 // Constructor
-CTA2045::CTA2045 () {
+CTA2045::CTA2045 (const tsu::config_map& init_map) : USB(init_map){
 
 } // end Constructor
 

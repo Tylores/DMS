@@ -1,7 +1,6 @@
 #ifndef CTA2045_H
 #define CTA2045_H
 
-
 class CTA2045 {
 public :
     // member functions
@@ -20,6 +19,10 @@ private :
     void Checksum ();
     void Heartbeat ();
     void Payload ();
+
+private :
+    // class composition
+    Serial USB;
 };
 
 #endif // CTA2045_H

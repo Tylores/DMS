@@ -17,12 +17,16 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 # General Requirments
 ifeq ($(CPU), x86)
 	CPUFLAGS := -m32
+elseif ($(CPU), arm)
+	CPUFLAGS :=
+	PILIBS := -lwiringPi
 else
 	CPUFLAGS :=
 endif
 
+
 CFLAGS := -Wall -pipe -std=c++11 -Wno-long-long -Wno-deprecated -g -DQCC_OS_LINUX -DQCC_OS_GROUP_POSIX -DQCC_DBG $(CPUFLAGS)
-LIB := -lstdc++ -lpthread -lrt -lm
+LIB := -lstdc++ -lpthread -lrt -lm $(PILIBS)
 INC := -I src/include
 
 # AllJoyn Requirments

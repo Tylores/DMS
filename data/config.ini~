@@ -9,25 +9,27 @@
 #
 # property=value
 # every property has a name and a value delimited by (=)
+
 [Log]
-planned=../data/planned.csv
-actual=../data/actual.csv
-summary=../data/summary.csv
+# important file names and directories
+directory=../data/
 
 [GPIO]
+# Broadband pin identification for Raspberry Pi
 temperature=18
 
 [Serial]
+# USB to RS485 settings
 path=/dev/ttyUSB0
 baud=19200
 
 [AllJoyn]
-app=assetMgmt
-device=TSEV01
+app=deras
+device=der001
 server_interface=edu.pdx.powerlab.sep.server
-device_interface=edu.pdx.powerlab.sep.edev
+device_interface=edu.pdx.powerlab.sep.client
 port=123
-path=/smartEnergy
+path=/SmartEnergy
 
 [NA]
 deviceID=7a439b61-3128-49f9-8a8b-65471a8fdeeb
