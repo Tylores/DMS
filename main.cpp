@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <sstream>
 
 class CTA2045
 {
@@ -15,8 +16,10 @@ public:
   void Heartbeat();
   void Payload();
   void Write(std::string command, char opcode1);
-  void IntWrite(std::string command, char opcode1, char opcode2)
+  void IntWrite(std::string command, char opcode1, char opcode2);
   std::string Read (std::string);
+  std::string InfoRequest(std::string info); //This should return a map, but not sure how to do it.
+  //void infoRequest();
 
 private:
   // member properties
@@ -25,12 +28,13 @@ private:
   };
 };
 
-class WaterHeater : public CTA2045
+class WaterHeater //: public CTA2045
 {
 public:
   int energy_take_;		//per UML diagram.
   int temperature_;
-
+  CTA2045 CTA;
+private:
   void Shed(char duration)
   {
     //const char* shed = "shed"; //Creates a pointer that I could pass to a program.
@@ -50,14 +54,14 @@ public:
     //const char* endShed = "endShed";
     char zero = 0x00;
     //CTA2045 CTA;
-    Write("end shed", zero);
+    CTA.CTA2045::Write("end shed", zero);
   }
 
 
   void LoadUp(char duration)
   {
     //CTA2045 CTA;
-    Write("load up", duration);
+    CTA.CTA2045::Write("load up", duration);
   }
 
   // Per Conversation with Tylor, we are not including ACK and NAK.
@@ -65,7 +69,8 @@ public:
   void RequestForPowerLevel(char percent)
   {
     //CTA2045 CTA;
-    Write("request for power level", percent);
+    CTA.CTA2045::Write("request for power level", percent);
+
   }
 
 
@@ -74,19 +79,19 @@ public:
   void CriticalPeakEvent(char duration)
   {
     //CTA2045 CTA;
-    Write("critical peak event", duration);
+    CTA.CTA2045::Write("critical peak event", duration);
   }
 
   void GridEmergency(char duration)
   {
     //CTA2045 CTA;
-    Write("grid emergency", duration);
+    CTA.CTA2045::Write("grid emergency", duration);
   }
 
   void GridGuidance(char duration)
   {
     //CTA2045 CTA;
-    Write("grid guidance", duration);
+    CTA.CTA2045::Write("grid guidance", duration);
   }
 
   // Per Conversation with Tylor, we are not including Outside Communication Connection Status.
@@ -94,46 +99,57 @@ public:
   void CustomerOverride(bool status) // on = 1, off = 0.
   {
     //CTA2045 CTA;
-    Write("customer override", status);
+    CTA.CTA2045::Write("customer override", status);
   }
 
   void QueryWhatIsYourOperationalState()
   {
     char zero = 0x00;
     //CTA2045 CTA;
-    Write("query: what is your operational state", zero);
+    CTA.CTA2045::Write("query: what is your operational state", zero);
   }
 
   void StateResponseQuery(char status) // on = 1, off = 0.
   {
     //CTA2045 CTA;
-    Write("state query response", status);
+    CTA.CTA2045::Write("state query response", status);
   }
 
   void Sleep()
   {
     char zero = 0x00;
     //CTA2045 CTA;
-    Write("sleep", zero);
+    CTA.CTA2045::Write("sleep", zero);
   }
 
   void WakeRefreshRequest()
   {
     char zero = 0x00;
     //CTA2045 CTA;
-    Write("wake / refresh request", zero);
+    CTA.CTA2045::Write("wake / refresh request", zero);
   }
 
-};
+//};
 
 
   void InfoRequest()
   {
+    //extern string infoRequest();
+
     char zero = 0x00;
     //CTA2045 CTA;
-    Write("wake / refresh request", zero);
-  }
+    CTA.CTA2045::Write("wake / refresh request", zero);
+    /*
+    unsigned int opcode1 = atoi(infoRequest.at(Opcode1));
+    unsigned int opcode2 = atoi(infoRequest.at(Opcode2));
+    unsigned int responseCode = atoi(infoRequest.at(ResponseCode));
+    */
+    unsigned int version = atoi(CTA.CTA2045::InfoRequest.at(std::string Version));
+    unsigned int vendorID = atoi(CTA.CTA2045::InfoRequest.at(VendorID));
+    unsigned int deviceType = atoi(CTA.CTA2045::InfoRequest.at(DeviceType));
+    unsigned int deviceRevision = atoi(CTA.CTA2405::InfoRequest.at(DeviceRevision));
 
+  }
 };
 
 
@@ -141,18 +157,24 @@ public:
 
 int main()
 {
-
+  int AmbientTemp = 65;
+  int SetPoint = 120; // This should be calculated based on status query.
+  int TotalEnergy = 20000 // Joules. We should be able to look this up.
 
   WaterHeater WH;
-  WH.energy_take_ = 0x12;
-  WH.temperature_ = 0x02;
-  char test = WH.energy_take_ + WH.temperature_;
-      std::cout << (int)test << std::endl;
+  WH.energy_take_ = (WH.RequestForPowerLevel() * TotalEnergy) / 127;
+  // This returns a 2-bit Hex, with 0x7F=100% and 0x00=0%.
 
-//	char a;
-    //int a = sizeof(byte);
+  WH.temperature_ = AmbientTemp + ((SetPoint - AmbientTemp) * ((WH.RequestForPowerLevel()*100) / 127)) / 100;
+
+
+
+  //char test = WH.energy_take_ + WH.temperature_;
+  //    std::cout << (int)test << std::endl;
+
     std::cout << "HELLO WORLD!" << std::endl;
-    //std::cout << a << std::endl;
+    std::cout << WH.energy_take_ << std::endl;
+    std::cout << WH.temperature_ << std::endl;
 
     std::cin.get();
     return 0;
