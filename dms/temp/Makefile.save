@@ -14,10 +14,19 @@ SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 
-
-CFLAGS := -Wall -pipe -std=c++11 -Wno-long-long -Wno-deprecated -g -DQCC_OS_LINUX -DQCC_OS_GROUP_POSIX -DQCC_DBG
-LIB := -lstdc++ -lpthread -lrt -lm
+= -Wall -pipe -std=c++11 -Wno-long-long -Wno-deprecated -g -DQCC_OS_LINUX -DQCC_OS_GROUP_POSIX -DQCC_DBG $(CPUFLAGS)
+LIB := -lstdc++ -lpthread -lrt -lm $(PILIBS)
 INC := -I src/include
+
+# AllJoyn Requirments
+ifeq ($(SECURE), secure)
+	AJFLAGS := -DROUTER -DSECURE
+else
+	AJFLAGS := -DROUTER
+endif
+CFLAGS += $(AJFLAGS)
+LIB += -L$(AJLIB) -lalljoyn -lajrouter
+INC += -I$(AJINC)
 
 $(TARGET) : $(OBJECTS)
 	@mkdir -p $(TARGETDIR)
